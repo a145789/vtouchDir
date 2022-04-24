@@ -1,20 +1,35 @@
-import type { Directive } from "vue"
+import type { ObjectDirective } from "vue"
 
 export const enum Direction {
-  LEFT,
-  RIGHT,
-  UP,
-  DOWN,
+  LEFT = "left",
+  RIGHT = "right",
+  UP = "up",
+  DOWN = "down",
 }
 
 const ctxKey = Symbol(`_cDt_${Math.random().toString().slice(4)}`)
 
+interface BindOption {
+  handler: ((direction: Direction) => void) | null
+  range: number
+}
+
+interface Modifiers {
+  prevent: boolean
+  stop: boolean
+  capture: boolean
+  once: boolean
+  self: boolean
+}
+
 interface CustomHTMLElement extends HTMLElement {
-  [ctxKey]: {
-    startPageX: number
-    startPageY: number
-    handler: ((direction: Direction) => void) | null
-  } | null
+  [ctxKey]:
+    | ({
+        startPageX: number
+        startPageY: number
+      } & BindOption &
+        Modifiers)
+    | null
 }
 
 function touchStartHandle(e: TouchEvent) {
@@ -22,25 +37,37 @@ function touchStartHandle(e: TouchEvent) {
   if (touches.length !== 1) {
     return
   }
-  e.preventDefault()
-  const option = (target as CustomHTMLElement)[ctxKey]
-  option!.startPageX = Math.round(touches[0].pageX)
-  option!.startPageY = Math.round(touches[0].pageY)
+  const option = (target as CustomHTMLElement)[ctxKey]!
+  if (option.self && e.target !== e.currentTarget) {
+    return
+  }
+
+  option.prevent && e.preventDefault()
+  option.stop && e.stopPropagation()
+
+  option.startPageX = Math.round(touches[0].pageX)
+  option.startPageY = Math.round(touches[0].pageY)
 }
 function touchEndHandle(e: TouchEvent) {
   const { changedTouches, target } = e
   if (changedTouches.length !== 1) {
     return
   }
-  e.preventDefault()
-  const { startPageX, startPageY, handler } = (target as CustomHTMLElement)[
-    ctxKey
-  ]!
+  const { startPageX, startPageY, handler, range, prevent, stop, self } = (
+    target as CustomHTMLElement
+  )[ctxKey]!
+  if (self && e.target !== e.currentTarget) {
+    return
+  }
+
+  prevent && e.preventDefault()
+  stop && e.stopPropagation()
+
   const endPageX = Math.round(changedTouches[0].pageX)
   const endPageY = Math.round(changedTouches[0].pageY)
   const deltaX = endPageX - startPageX
   const deltaY = endPageY - startPageY
-  if (Math.abs(deltaY) < 10 && Math.abs(deltaX) < 10) {
+  if (Math.abs(deltaY) < range && Math.abs(deltaX) < range) {
     return
   }
   if (Math.abs(deltaX) > Math.abs(deltaY)) {
@@ -61,24 +88,57 @@ function touchEndHandle(e: TouchEvent) {
     }
   }
 }
-const vTouchDir: Directive<CustomHTMLElement, (direction: Direction) => void> =
-  {
-    mounted(el, binding) {
-      if (!el[ctxKey]) {
-        el[ctxKey] = {
-          startPageX: 0,
-          startPageY: 0,
-          handler: binding.value,
-        }
+const vTouchDir: ObjectDirective<CustomHTMLElement, BindOption> = {
+  mounted(
+    el,
+    {
+      value,
+      modifiers: {
+        prevent = false,
+        stop = false,
+        capture = false,
+        once = false,
+        self = false,
+      },
+    }
+  ) {
+    if (!value) {
+      return
+    }
+
+    if (!el[ctxKey]) {
+      const option: any = {
+        startPageX: 0,
+        startPageY: 0,
       }
-      el.addEventListener("touchstart", touchStartHandle)
-      el.addEventListener("touchend", touchEndHandle)
-    },
-    beforeUnmount(el) {
-      el.removeEventListener("touchstart", touchStartHandle)
-      el.removeEventListener("touchend", touchEndHandle)
-      el[ctxKey] = null
-    },
-  }
+      if (typeof value === "function") {
+        option.handler = value
+      } else {
+        const { handler, range } = value
+        option.handler = handler
+        option.range = isNull(range) ? 10 : range
+      }
+      el[ctxKey] = {
+        ...option,
+        prevent,
+        stop,
+        capture,
+        once,
+        self,
+      }
+    }
+    el.addEventListener("touchstart", touchStartHandle, { capture, once })
+    el.addEventListener("touchend", touchEndHandle, { capture, once })
+  },
+  beforeUnmount(el) {
+    el.removeEventListener("touchstart", touchStartHandle)
+    el.removeEventListener("touchend", touchEndHandle)
+    el[ctxKey] = null
+  },
+}
 
 export default vTouchDir
+
+function isNull(ele: unknown): boolean {
+  return ele === null || ele === undefined
+}
