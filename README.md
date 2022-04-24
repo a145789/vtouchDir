@@ -20,17 +20,41 @@ npm install --save-dev vtouchdir
 
 ```vue
 <script setup lang="ts">
-import vTouchDir from "vtouchdir"
+import vTouchdir from "vtouchdir"
 
-export default {
-  directives: {
-    vTouchDir,
-  },
-}
+function handler(dir: 'left' | 'right' | 'up' | 'down') {}
 </script>
 
 <template>
-  <div v-touchDir="(dir: 'left' | 'right' | 'up' | 'down') => handle(dir)" />
+  <div v-touchdir="handler" />
+</template>
+```
+
+支持除 `passive` 外与 `vue` 相同的 [事件修饰符](https://staging-cn.vuejs.org/guide/essentials/event-handling.html#event-modifiers)，`.self` 优先级最高
+
+```vue
+<script setup lang="ts">
+import vTouchdir from "vtouchdir"
+
+function handler(dir: 'left' | 'right' | 'up' | 'down') {}
+</script>
+
+<template>
+  <div v-touchdir.once.stop.prevent="handler" />
+</template>
+```
+
+默认滑动的范围为 **10** ，滑动超过 **10** 才会触发 `handler`，可指定一个 `range` 参数自定义范围
+
+```vue
+<script setup lang="ts">
+import vTouchdir from "vtouchdir"
+
+function handler(dir: 'left' | 'right' | 'up' | 'down') {}
+</script>
+
+<template>
+  <div v-touchdir.once.stop.prevent="{ handler, range: 0 }" />
 </template>
 ```
 
@@ -48,5 +72,5 @@ export const enum Direction {
 }
 
 // use
-import vTouchDir, { Direction } from "vtouchdir"
+import vTouchdir, { Direction } from "vtouchdir"
 ```
