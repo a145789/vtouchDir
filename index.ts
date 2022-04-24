@@ -1,10 +1,10 @@
 import type { ObjectDirective } from "vue"
 
-export const enum Direction {
-  LEFT = "left",
-  RIGHT = "right",
-  UP = "up",
-  DOWN = "down",
+export enum Direction {
+  LEFT = 'left',
+  RIGHT = 'right',
+  UP = 'up',
+  DOWN = 'down'
 }
 
 const ctxKey = Symbol(`_cDt_${Math.random().toString().slice(4)}`)
