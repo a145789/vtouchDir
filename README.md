@@ -4,8 +4,14 @@
 
 ## Installation
 
+### npm
 ```bash
 npm install --save-dev vtouchdir
+```
+
+### pnpm
+```bash
+pnpm add vtouchdir -D
 ```
 
 ## Docs
