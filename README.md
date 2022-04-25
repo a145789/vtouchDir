@@ -1,6 +1,12 @@
+<p align="center">
+  <a href="https://www.npmjs.com/package/vtouchdir" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/v/vtouchdir" alt="NPM Version" /></a>
+  <a href="https://www.npmjs.com/package/vtouchdir" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/npm/dt/vtouchdir" alt="NPM Downloads" /></a>
+  <a href="https://github.com/a145789/vtouchdir/blob/master/LICENSE" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/github/license/a145789/vtouchdir" alt="License" /></a>
+</p>
+
 # vtouchdir
 
-移动端 vue3 touch api 滑动方向自定义指令
+移动端 vue3 touch api 滑动方向自定义指令 
 
 ## Installation
 
