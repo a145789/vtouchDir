@@ -76,7 +76,7 @@ function handler(dir: 'left' | 'right' | 'up' | 'down') {}
 
 ```ts
 // vtouchdir
-export const enum Direction {
+export enum Direction {
   LEFT = "left",
   RIGHT = "right",
   UP = "up",
