@@ -1,14 +1,13 @@
 {
   "name": "vtouchdir",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "packageManager": "pnpm@7.0.0",
   "description": "vue3 touch direction directive",
   "module": "es/index.js",
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
-    "release": "npm run build && npm publish --registry=https://registry.npmjs.org",
-    "publish": "npm publish --registry=https://registry.npmjs.org"
+    "release": "pnpm run build && pnpm publish --access public --no-git-checks",
   },
   "files": [
     "lib",
