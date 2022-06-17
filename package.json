@@ -7,7 +7,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
-    "release": "pnpm run build && pnpm publish --access public --no-git-checks",
+    "release": "pnpm run build && pnpm publish --access public --no-git-checks"
   },
   "files": [
     "lib",
