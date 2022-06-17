@@ -1,6 +1,7 @@
 {
   "name": "vtouchdir",
   "version": "0.0.3",
+  "packageManager": "pnpm@7.0.0",
   "description": "vue3 touch direction directive",
   "module": "es/index.js",
   "main": "lib/index.js",
