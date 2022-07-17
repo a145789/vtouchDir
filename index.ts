@@ -24,21 +24,21 @@ interface Modifiers {
 
 interface CustomHTMLElement extends HTMLElement {
   [ctxKey]:
-    | ({
-        startPageX: number
-        startPageY: number
-      } & BindOption &
-        Modifiers)
-    | null
+  | ({
+    startPageX: number
+    startPageY: number
+  } & BindOption &
+    Modifiers)
+  | null
 }
 
 function touchStartHandle(e: TouchEvent) {
-  const { target, touches } = e
+  const { target, currentTarget, touches } = e
   if (touches.length !== 1) {
     return
   }
-  const option = (target as CustomHTMLElement)[ctxKey]!
-  if (option.self && e.target !== e.currentTarget) {
+  const option = (currentTarget as CustomHTMLElement)[ctxKey]!
+  if (option.self && currentTarget !== target) {
     return
   }
 
@@ -49,14 +49,14 @@ function touchStartHandle(e: TouchEvent) {
   option.startPageY = Math.round(touches[0].pageY)
 }
 function touchEndHandle(e: TouchEvent) {
-  const { changedTouches, target } = e
+  const { changedTouches, currentTarget, target } = e
   if (changedTouches.length !== 1) {
     return
   }
   const { startPageX, startPageY, handler, range, prevent, stop, self } = (
-    target as CustomHTMLElement
+    currentTarget as CustomHTMLElement
   )[ctxKey]!
-  if (self && e.target !== e.currentTarget) {
+  if (self && currentTarget !== target) {
     return
   }
 
