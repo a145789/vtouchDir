@@ -4,6 +4,9 @@
     "target": "ES6",
     "strict": true,
     "declaration": true,
-    "moduleResolution": "node"
-  }
+    "moduleResolution": "Node",
+  },
+  "include": [
+    "./index.ts"
+  ]
 }
