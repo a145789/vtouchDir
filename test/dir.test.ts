@@ -222,4 +222,106 @@ describe('test stop', () => {
 
     wrapper.unmount()
   })
+
+  test('test capture', async () => {
+    const Wrapper = defineComponent({
+      ...option,
+      template: `
+      <div class="container" style="width: 100px; height: 100px" v-touchdir="outHandle">
+        <div class="inner" style="width: 50px; height 50px;" v-touchdir.capture="inHandle"></div>
+      </div>
+    `
+    })
+
+    const wrapper = mount(Wrapper, { attachTo: document.body })
+
+    await wrapper
+      .find('.inner')
+      .trigger('touchstart', { touches: [{ pageX: 0, pageY: 0 }] })
+    await wrapper
+      .find('.inner')
+      .trigger('touchend', { changedTouches: [{ pageX: 100, pageY: 0 }] })
+    expect(wrapper.vm.inDir).eq(Direction.RIGHT)
+    expect(wrapper.vm.outDir).eq(Direction.RIGHT)
+
+    wrapper.unmount()
+  })
+})
+
+describe('test capture', () => {
+  const option = {
+    name: 'wrapper',
+    directives: { Touchdir },
+    data() {
+      return {
+        outDir: null as Direction | null,
+        inDir: null as Direction | null,
+        firstTrigger: null as 'out' | 'in' | null
+      }
+    },
+    methods: {
+      outHandle(dir: Direction) {
+        if(!this.firstTrigger) {
+          this.firstTrigger = 'out'
+        }
+        this.outDir = dir
+      },
+      inHandle(dir: Direction) {
+        if(!this.firstTrigger) {
+          this.firstTrigger = 'in'
+        }
+        this.inDir = dir
+      }
+    }
+  }
+
+  test('test normal', async () => {
+    const Wrapper = defineComponent({
+      ...option,
+      template: `
+      <div class="container" style="width: 100px; height: 100px" v-touchdir="outHandle">
+        <div class="inner" style="width: 50px; height 50px;" v-touchdir="inHandle"></div>
+      </div>
+    `
+    })
+
+    const wrapper = mount(Wrapper, { attachTo: document.body })
+
+    await wrapper
+      .find('.inner')
+      .trigger('touchstart', { touches: [{ pageX: 0, pageY: 0 }] })
+    await wrapper
+      .find('.inner')
+      .trigger('touchend', { changedTouches: [{ pageX: 100, pageY: 0 }] })
+    expect(wrapper.vm.inDir).eq(Direction.RIGHT)
+    expect(wrapper.vm.outDir).eq(Direction.RIGHT)
+    expect(wrapper.vm.firstTrigger).eq('in')
+
+    wrapper.unmount()
+  })
+
+  test('test capture', async () => {
+    const Wrapper = defineComponent({
+      ...option,
+      template: `
+      <div class="container" style="width: 100px; height: 100px" v-touchdir.capture="outHandle">
+        <div class="inner" style="width: 50px; height 50px;" v-touchdir="inHandle"></div>
+      </div>
+    `
+    })
+
+    const wrapper = mount(Wrapper, { attachTo: document.body })
+
+    await wrapper
+      .find('.inner')
+      .trigger('touchstart', { touches: [{ pageX: 0, pageY: 0 }] })
+    await wrapper
+      .find('.inner')
+      .trigger('touchend', { changedTouches: [{ pageX: 100, pageY: 0 }] })
+    expect(wrapper.vm.inDir).eq(Direction.RIGHT)
+    expect(wrapper.vm.outDir).eq(Direction.RIGHT)
+    expect(wrapper.vm.firstTrigger).eq('out')
+
+    wrapper.unmount()
+  })
 })
