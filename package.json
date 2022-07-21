@@ -6,7 +6,8 @@
   "module": "es/index.js",
   "main": "lib/index.js",
   "scripts": {
-    "test": "vitest",
+    "test:watch": "vitest",
+    "test": "vitest run",
     "dist": "tsc -p tsconfig.dist.json",
     "build": "tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
     "release": "pnpm run build && pnpm publish --access public --no-git-checks"
