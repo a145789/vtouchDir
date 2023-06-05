@@ -1,16 +1,29 @@
 import type { ObjectDirective } from "vue"
 
 export enum Direction {
-  LEFT = 'left',
-  RIGHT = 'right',
-  UP = 'up',
-  DOWN = 'down'
+  LEFT = "left",
+  RIGHT = "right",
+  UP = "up",
+  DOWN = "down",
 }
 
 const ctxKey = Symbol(`_cDt_${Math.random().toString().slice(4)}`)
 
 interface BindOption {
-  handler: ((direction: Direction) => void) | null
+  handler:
+    | ((
+        direction: Direction,
+        e: TouchEvent,
+        rangeParams: {
+          startPageX: number
+          startPageY: number
+          endPageX: number
+          endPageY: number
+          deltaX: number
+          deltaY: number
+        }
+      ) => void)
+    | null
   range: number
 }
 
@@ -24,12 +37,12 @@ interface Modifiers {
 
 interface CustomHTMLElement extends HTMLElement {
   [ctxKey]:
-  | ({
-    startPageX: number
-    startPageY: number
-  } & BindOption &
-    Modifiers)
-  | null
+    | ({
+        startPageX: number
+        startPageY: number
+      } & BindOption &
+        Modifiers)
+    | null
 }
 
 function touchStartHandle(e: TouchEvent) {
@@ -70,21 +83,29 @@ function touchEndHandle(e: TouchEvent) {
   if (Math.abs(deltaY) < range && Math.abs(deltaX) < range) {
     return
   }
+  const rangeParams = {
+    startPageX,
+    startPageY,
+    endPageX,
+    endPageY,
+    deltaX,
+    deltaY,
+  }
   if (Math.abs(deltaX) > Math.abs(deltaY)) {
     if (deltaX > 0) {
       // 向右滑动
-      handler?.(Direction.RIGHT)
+      handler?.(Direction.RIGHT, e, rangeParams)
     } else {
       // 向左滑动
-      handler?.(Direction.LEFT)
+      handler?.(Direction.LEFT, e, rangeParams)
     }
   } else {
     if (deltaY > 0) {
       // 向下滑动
-      handler?.(Direction.DOWN)
+      handler?.(Direction.DOWN, e, rangeParams)
     } else {
       // 向上滑动
-      handler?.(Direction.UP)
+      handler?.(Direction.UP, e, rangeParams)
     }
   }
 }

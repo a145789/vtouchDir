@@ -4,13 +4,9 @@
   <a href="https://github.com/a145789/vtouchdir/blob/main/LICENSE" target="_blank" rel="noopener noreferrer"><img src="https://badgen.net/github/license/a145789/vtouchdir" alt="License" /></a>
 </p>
 
-<p align="center">
-  <a href="https://github.com/a145789/vtouchdir/blob/main/README_zh-CN.md" target="_blank" rel="noopener noreferrer">中文</a>
-</p>
-
 # vtouchdir
 
-A mobile vue3 touch api custom directive for swipe direction
+移动端 vue3 touch api 滑动方向自定义指令
 
 ## Installation
 
@@ -32,7 +28,7 @@ pnpm add vtouchdir -D
 
 **Description**
 
-A function can be passed in, which will be called after the element slides, and can receive three parameters.
+可传入一个函数，会在该元素滑动结束后调用，可接收三个参数
 
 **Usage**
 
@@ -59,7 +55,7 @@ const handler = (
 </template>
 ```
 
-Supports the same [event modifiers](https://v3.vuejs.org/guide/essentials/event-handling.html#event-modifiers) as `vue` except for `passive`, `.self` has the highest priority
+支持除 `passive` 外与 `vue` 相同的 [事件修饰符](https://staging-cn.vuejs.org/guide/essentials/event-handling.html#event-modifiers)，`.self` 优先级最高
 
 ```vue
 <script setup lang="ts">
@@ -73,7 +69,7 @@ function handler(dir: "left" | "right" | "up" | "down") {}
 </template>
 ```
 
-The default swipe range is **10**, and the `handler` will be triggered only when the swipe exceeds **10**. You can specify a `range` parameter to customize the range
+默认滑动的范围为 **10** ，滑动超过 **10** 才会触发 `handler`，可指定一个 `range` 参数自定义范围
 
 ```vue
 <script setup lang="ts">
@@ -89,7 +85,7 @@ function handler(dir: "left" | "right" | "up" | "down") {}
 
 **Typescript**
 
-If you use `ts`, you can export the `Direction` enum
+如果使用 `ts` 的话可以导出 `Direction` 枚举
 
 ```ts
 // vtouchdir
